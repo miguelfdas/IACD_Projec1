@@ -20,8 +20,8 @@ services:
     image: miguelfdas/frontend_project_iacd:frontend
     ports:
       - 3000:3000
-    # stdin_open: true
-    # tty: true
+    stdin_open: true
+    tty: true
 
 volumes:
   mongodb_data:
