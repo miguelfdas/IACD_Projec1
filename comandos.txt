@@ -1,0 +1,33 @@
+1.
+
+docker network create projectdb
+
+docker run --name mongo --network projectdb mongo
+
+mongodb://mongo:27017/course-goals
+
+docker build -t backend_image .
+docker build -t frontend_image .
+
+docker run --name backend --network projectdb -p 80:80 backend_image
+docker run --name frontend --network projectdb -p 3000:3000 frontend_image
+
+2.
+
+docker volume create mongodb_data
+docker stop mongo
+docker container rm mongo
+docker run --name mongo --network projectdb -v mongodb_data:/data/db mongo
+
+docker volume create app_logs
+docker stop backend
+docker container rm backend
+docker run --name backend --network projectdb -p 80:80 -v app_logs:/logs backend_image
+
+3.
+
+docker tag backend_image miguelfdas/backend_project_iacd:backend
+docker push miguelfdas/backend_project_iacd:backend
+
+docker tag backend_image miguelfdas/frontend_project_iacd:frontend
+docker push miguelfdas/frontend_project_iacd:frontend
