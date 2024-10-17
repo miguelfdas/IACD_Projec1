@@ -31,3 +31,5 @@ docker push miguelfdas/backend_project_iacd:backend
 
 docker tag backend_image miguelfdas/frontend_project_iacd:frontend
 docker push miguelfdas/frontend_project_iacd:frontend
+
+docker-compose up
