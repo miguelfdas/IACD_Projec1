@@ -1,35 +1,77 @@
 1.
 
-docker network create projectdb
+docker network create net
 
-docker run --name mongo --network projectdb mongo
+docker pull mongo
 
-mongodb://mongo:27017/course-goals
+docker build -t backend backend/.
+docker build -t frontend frontend/.
 
-docker build -t backend_image .
-docker build -t frontend_image .
-
-docker run --name backend --network projectdb -p 80:80 backend_image
-docker run --name frontend --network projectdb -p 3000:3000 frontend_image
+docker run --name mongo --network net mongo
+docker run --name backend --network net -p 80:80 backend
+docker run --name frontend --network net -p 3000:3000 frontend
 
 2.
 
-docker volume create mongodb_data
+docker build -t backend:network backend/.
+
+docker volume create mongo_vol
+docker volume create backend_vol
+
 docker stop mongo
 docker container rm mongo
-docker run --name mongo --network projectdb -v mongodb_data:/data/db mongo
+docker run -d --name mongo --network net -v mongo_vol:/data/db mongo
 
-docker volume create app_logs
 docker stop backend
 docker container rm backend
-docker run --name backend --network projectdb -p 80:80 -v app_logs:/logs backend_image
+docker run -d --name backend --network net -p 80:80 -v backend_vol:/logs backend
+
+docker stop frontend
+docker container rm frontend
+docker run -d --name frontend --network net -p 3000:3000 frontend
 
 3.
 
-docker tag backend_image miguelfdas/backend_project_iacd:backend
+docker tag backend miguelfdas/backend_project_iacd:backend
 docker push miguelfdas/backend_project_iacd:backend
 
-docker tag backend_image miguelfdas/frontend_project_iacd:frontend
+docker tag frontend miguelfdas/frontend_project_iacd:frontend
 docker push miguelfdas/frontend_project_iacd:frontend
 
-docker-compose up
+docker compose up -d
+
+4.
+
+Kubernetes Imperative Approach
+
+minikube start
+
+kubectl create deployment kubs-mongo-proj-depl --image=mongo --port=27017
+kubectl create deployment kubs-backend-proj-depl --image=miguelfdas/backend_project_iacd:backend --port=80 --replicas=2
+kubectl create deployment kubs-frontend-proj-depl --image=miguelfdas/frontend_project_iacd:frontend --port=3000 --replicas=3
+
+kubectl expose deployment kubs-mongo-proj-depl --type=ClusterIP --port=27017
+kubectl expose deployment kubs-backend-proj-depl --type=LoadBalancer --port=80
+kubectl expose deployment kubs-frontend-proj-depl --type=LoadBalancer --port=3000
+
+minikube stop
+
+Kubernetes Declarative Approach
+
+//   'mongodb://${process.env.DB_ADDRESS}:27017/course-goals', em app.js backend
+
+
+docker build -t backend backend/.
+docker tag backend miguelfdas/backend_project_iacd:backend
+docker push miguelfdas/backend_project_iacd:backend
+
+minikube start
+
+kubectl apply -f mongo_deployment_4.yaml
+kubectl apply -f mongo_service_4.yaml
+
+kubectl apply -f backend_deployment_4.yaml
+kubectl apply -f backend_service_4.yaml
+
+kubectl apply -f frontend_deployment_4.yaml
+kubectl apply -f frontend_service_4.yaml
