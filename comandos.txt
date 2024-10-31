@@ -13,7 +13,7 @@ docker run --name frontend --network net -p 3000:3000 frontend
 
 2.
 
-docker build -t backend:network backend/.
+docker build -t backend backend/.
 
 docker volume create mongo_vol
 docker volume create backend_vol
@@ -32,13 +32,12 @@ docker run -d --name frontend --network net -p 3000:3000 frontend
 
 3.
 
-docker tag backend miguelfdas/backend_project_iacd:backend
 docker push miguelfdas/backend_project_iacd:backend
 
-docker tag frontend miguelfdas/frontend_project_iacd:frontend
 docker push miguelfdas/frontend_project_iacd:frontend
 
 docker compose up -d
+docker compose down -d
 
 4.
 
@@ -68,10 +67,17 @@ docker push miguelfdas/backend_project_iacd:backend
 minikube start
 
 kubectl apply -f mongo_deployment_4.yaml
-kubectl apply -f mongo_service_4.yaml
-
 kubectl apply -f backend_deployment_4.yaml
-kubectl apply -f backend_service_4.yaml
-
 kubectl apply -f frontend_deployment_4.yaml
+
+kubectl apply -f mongo_service_4.yaml
+kubectl apply -f backend_service_4.yaml
 kubectl apply -f frontend_service_4.yaml
+
+kubectl apply -f mongo-pv.yaml
+kubectl apply -f backend-pv.yaml
+
+kubectl apply -f mongo-pvc.yaml
+kubectl apply -f backend-pvc.yaml
+
+minikube stop
