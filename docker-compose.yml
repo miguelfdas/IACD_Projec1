@@ -1,5 +1,4 @@
 services:
-
   mongo:
     image: mongo
     volumes:
@@ -17,8 +16,6 @@ services:
       - 'mongo'
     networks:
       - net
-    stdin_open: true
-    tty: true
 
   frontend:
     image: miguelfdas/frontend_project_iacd:frontend
@@ -26,8 +23,6 @@ services:
       - 3000:3000
     depends_on:
       - back_container
-    stdin_open: true
-    tty: true 
 
 volumes:
   mongo_vol:
