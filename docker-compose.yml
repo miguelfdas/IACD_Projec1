@@ -1,28 +1,28 @@
 services:
 
   mongo:
-    image: mongo # Use the official MongoDB image
+    image: mongo
     volumes:
-    - mongo_vol:/data/db # Mount the MongoDB data directory to the host machine
+    - mongo_vol:/data/db
     ports:
     - 27017:27017
 
   backend:
-    image: miguelfdas/backend_project_iacd:backend # Use the image we built in the previous step
+    image: miguelfdas/backend_project_iacd:backend
     ports:
       - 80:80
     volumes:
-    - backend_vol:/backend/logs # Mount the logs directory to the host machine
+    - backend_vol:/backend/logs
     depends_on:
-      - 'mongo' # Wait until the 'mongo' service is running
+      - 'mongo'
 
   frontend:
     image: miguelfdas/frontend_project_iacd:frontend
     ports:
       - 3000:3000
-    stdin_open: true # Keep STDIN open even if not attached so we can interact with the container’s shell
-    tty: true # Allocate a pseudo-TTY so we can interact with the container’s shell
+    stdin_open: true
+    tty: true 
 
 volumes:
-  mongodb_data: # Define the 'mongodb_data' volume
-  app_logs: # Define the 'app_logs' volume
+  mongo_vol:
+  backend_vol:

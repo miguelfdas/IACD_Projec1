@@ -13,8 +13,6 @@ docker run --name frontend --network net -p 3000:3000 frontend
 
 2.
 
-docker build -t backend backend/.
-
 docker volume create mongo_vol
 docker volume create backend_vol
 
@@ -39,7 +37,7 @@ docker push miguelfdas/frontend_project_iacd:frontend
 docker compose up -d
 docker compose down -d
 
-4.
+4 e 5.
 
 Kubernetes Imperative Approach
 
@@ -58,7 +56,6 @@ minikube stop
 Kubernetes Declarative Approach
 
 //   'mongodb://${process.env.DB_ADDRESS}:27017/course-goals', em app.js backend
-
 
 docker build -t backend backend/.
 docker tag backend miguelfdas/backend_project_iacd:backend
