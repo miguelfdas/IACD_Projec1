@@ -4,25 +4,34 @@ services:
     image: mongo
     volumes:
     - mongo_vol:/data/db
-    ports:
-    - 27017:27017
+    networks:
+      - net
 
   backend:
     image: miguelfdas/backend_project_iacd:backend
     ports:
       - 80:80
     volumes:
-    - backend_vol:/backend/logs
+    - backend_vol:/logs
     depends_on:
       - 'mongo'
+    networks:
+      - net
+    stdin_open: true
+    tty: true
 
   frontend:
     image: miguelfdas/frontend_project_iacd:frontend
     ports:
       - 3000:3000
+    depends_on:
+      - back_container
     stdin_open: true
     tty: true 
 
 volumes:
   mongo_vol:
   backend_vol:
+
+networks:
+  net:
